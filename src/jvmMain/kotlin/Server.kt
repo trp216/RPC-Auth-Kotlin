@@ -15,11 +15,12 @@ import com.mongodb.ConnectionString
 
 fun main() {
 
-    val users = mutableListOf(
+  /**  val users = mutableListOf(
     User("user1", "12345", "Pepa","Pig","10-12-1998"),
     User("Tomatoes 🍅", "54321", "Pepe","Pantoja","04-03-1886"),
     User("Orange Juice 🍊", "1234", "Gorou", "The General","15-07-2000")
     )
+  **/
 
     /**
      * val shoppingList = mutableListOf(
@@ -29,6 +30,9 @@ fun main() {
     )
      */
 
+    val client = KMongo.createClient().coroutine
+    val database = client.getDatabase("usersDB")
+    val collection = database.getCollection<User>()
 
     embeddedServer(Netty, 9090) {
         install(ContentNegotiation) {
@@ -56,15 +60,15 @@ fun main() {
             }
             route(User.path) {
                 get {
-                    call.respond(users)
+                    call.respond(collection.find().toList())
                 }
                 post {
-                    users += call.receive<User>()
+                    collection.insertOne(call.receive<User>())
                     call.respond(HttpStatusCode.OK)
                 }
                 delete("/{id}") {
                     val id = call.parameters["id"]?.toInt() ?: error("Invalid delete request")
-                    users.removeIf { it.id == id }
+                    collection.deleteOne(User::id eq id)
                     call.respond(HttpStatusCode.OK)
                 }
             }
