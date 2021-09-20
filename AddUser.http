@@ -1,0 +1,11 @@
+POST http://localhost:9090/register
+Content-Type: application/json
+
+{
+  "username": "addedByHTTPPost",
+  "password": "12345",
+  "firstname":"genericname",
+  "lastname": "genericlastname",
+  "birthdate": "28-10-1999"
+
+}
