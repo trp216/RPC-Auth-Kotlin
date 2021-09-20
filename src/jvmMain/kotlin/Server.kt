@@ -12,23 +12,9 @@ import org.litote.kmongo.*
 import org.litote.kmongo.coroutine.*
 import org.litote.kmongo.reactivestreams.KMongo
 import com.mongodb.ConnectionString
+import kotlinx.serialization.json.buildJsonObject
 
 fun main() {
-
-  /**  val users = mutableListOf(
-    User("user1", "12345", "Pepa","Pig","10-12-1998"),
-    User("Tomatoes 🍅", "54321", "Pepe","Pantoja","04-03-1886"),
-    User("Orange Juice 🍊", "1234", "Gorou", "The General","15-07-2000")
-    )
-  **/
-
-    /**
-     * val shoppingList = mutableListOf(
-    ShoppingListItem("Cucumbers 🥒", 1),
-    ShoppingListItem("Tomatoes 🍅", 2),
-    ShoppingListItem("Orange Juice 🍊", 3)
-    )
-     */
 
     val client = KMongo.createClient().coroutine
     val database = client.getDatabase("usersDB")
@@ -55,6 +41,16 @@ fun main() {
                     ContentType.Text.Html
                 )
             }
+            /*
+            get("{id}") {
+                val id = call.parameters["id"] ?: return@get call.respondText(
+                    "Missing or malformed id",
+                    status = HttpStatusCode.BadRequest
+                )
+                val user = collection.find(id)
+                call.respond(user)
+            }*/
+
             static("/") {
                 resources("")
             }
@@ -62,6 +58,7 @@ fun main() {
                 get {
                     call.respond(collection.find().toList())
                 }
+
                 post {
                     collection.insertOne(call.receive<User>())
                     call.respond(HttpStatusCode.OK)

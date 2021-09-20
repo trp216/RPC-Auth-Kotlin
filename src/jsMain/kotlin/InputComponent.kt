@@ -9,7 +9,7 @@ external interface InputProps : RProps {
     var onSubmit: (String, String, String, String, String) -> Unit
 }
 
-val InputComponent = functionalComponent<InputProps> { props ->
+val SignUpComponent = functionalComponent<InputProps> { props ->
     val (username, setUsername) = useState("")
     val (password, setPassword) = useState("")
     val (firstname, setFirstname) = useState("")
@@ -82,7 +82,7 @@ val InputComponent = functionalComponent<InputProps> { props ->
         br {  }
         input(InputType.button) {
             attrs.onClickFunction = submitHandler
-            attrs.value = "Sign in"
+            attrs.value = "Sign up"
         }
 
     }

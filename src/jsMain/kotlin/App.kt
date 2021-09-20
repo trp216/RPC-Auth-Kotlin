@@ -1,12 +1,44 @@
 import react.*
 import react.dom.*
 import kotlinext.js.*
+import kotlinx.browser.document
 import kotlinx.html.js.*
 import kotlinx.coroutines.*
+import org.w3c.dom.HTMLInputElement
+import org.w3c.dom.events.Event
 
 private val scope = MainScope()
 
-val App = functionalComponent<RProps> { _ ->
+val SignUpChild = functionalComponent<RProps> {
+
+    val signInHandler: (Event) -> Unit = {
+        render(document.getElementById("root")){
+            child(SignInChild)
+        }
+    }
+
+    nav {
+        button {
+            attrs.onClickFunction = signInHandler
+            attrs.value = "Sign In"
+        }
+    }
+
+    child(
+        SignUpComponent,
+        props = jsObject {
+            onSubmit = { username, password, firstname, lastname, birthdate ->
+                var newPassword = password.hashCode().toString() +"H4sh34d0"+ username.hashCode()
+                val user = User(username, newPassword, firstname, lastname, birthdate)
+                scope.launch {
+                    addUsers(user)
+                }
+            }
+        }
+    )
+}
+
+val SignInChild = functionalComponent<RProps> {
     val (users, setUsers) = useState(emptyList<User>())
 
     useEffect {
@@ -14,8 +46,30 @@ val App = functionalComponent<RProps> { _ ->
             setUsers(getUsers())
         }
     }
-    h1 {
-        +"It is into a table :D"
+
+    child(
+        SignInComponent,
+        props = jsObject{
+            onSubmit = { username, password ->
+                var tempUser = users.find { it.username == username }
+                if(tempUser!=null){
+                    if(tempUser.password == password)
+                        render(document.getElementById("root")){
+                            child(ListComponent)
+                        }
+                }
+            }
+        }
+    )
+}
+
+val ListComponent = functionalComponent<RProps> {
+    val (users, setUsers) = useState(emptyList<User>())
+
+    useEffect {
+        scope.launch {
+            setUsers(getUsers())
+        }
     }
     table {
 
@@ -55,18 +109,4 @@ val App = functionalComponent<RProps> { _ ->
             }
         }
     }
-
-    child(
-        InputComponent,
-        props = jsObject {
-            onSubmit = { username, password, firstname, lastname, birthdate ->
-                val user = User(username, password, firstname, lastname, birthdate)
-                scope.launch {
-                    addUsers(user)
-                    setUsers(getUsers())
-                }
-            }
-        }
-    )
-
 }
