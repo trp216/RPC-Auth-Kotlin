@@ -1,4 +1,4 @@
 Integrantes:
 
--Diego Alejandro Pachón Hernández  
+-Diego Alejandro Hernández Pachón
 -Alejandra Díaz Parra
