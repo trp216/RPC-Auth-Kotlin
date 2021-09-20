@@ -11,24 +11,11 @@ private val scope = MainScope()
 
 val SignUpChild = functionalComponent<RProps> {
 
-    val signInHandler: (Event) -> Unit = {
-        render(document.getElementById("root")){
-            child(SignInChild)
-        }
-    }
-
-    nav {
-        button {
-            attrs.onClickFunction = signInHandler
-            attrs.value = "Sign In"
-        }
-    }
-
     child(
         SignUpComponent,
         props = jsObject {
             onSubmit = { username, password, firstname, lastname, birthdate ->
-                var newPassword = password.hashCode().toString() +"H4sh34d0"+ username.hashCode()
+                val newPassword = password.hashCode().toString() +"H4sh34d0"+ username.hashCode()
                 val user = User(username, newPassword, firstname, lastname, birthdate)
                 scope.launch {
                     addUsers(user)
@@ -36,9 +23,18 @@ val SignUpChild = functionalComponent<RProps> {
             }
         }
     )
+
+    h2 { +"Already have an account?" }
+
+    button {
+        a (href = "/"){
+            +"Sign In"
+        }
+    }
 }
 
 val SignInChild = functionalComponent<RProps> {
+
     val (users, setUsers) = useState(emptyList<User>())
 
     useEffect {
@@ -53,18 +49,37 @@ val SignInChild = functionalComponent<RProps> {
             onSubmit = { username, password ->
                 var tempUser = users.find { it.username == username }
                 if(tempUser!=null){
-                    if(tempUser.password == password)
+                    val newPassword = password.hashCode().toString() +"H4sh34d0"+ username.hashCode()
+                    if(tempUser.password == newPassword)
                         render(document.getElementById("root")){
-                            child(ListComponent)
+                            child(ListChild)
                         }
                 }
             }
         }
     )
+
+    h2 {
+        +"Don't have an account?"
+    }
+    button {
+        a (href = "signup"){
+            +"Sign up"
+        }
+    }
+
 }
 
-val ListComponent = functionalComponent<RProps> {
+val ListChild = functionalComponent<RProps> {
     val (users, setUsers) = useState(emptyList<User>())
+
+    nav {
+        button {
+            a (href = "/"){
+                +"Logout"
+            }
+        }
+    }
 
     useEffect {
         scope.launch {

@@ -41,15 +41,18 @@ fun main() {
                     ContentType.Text.Html
                 )
             }
-            /*
-            get("{id}") {
-                val id = call.parameters["id"] ?: return@get call.respondText(
-                    "Missing or malformed id",
-                    status = HttpStatusCode.BadRequest
+            get("/login") {
+                call.respondText(
+                    this::class.java.classLoader.getResource("index.html")!!.readText(),
+                    ContentType.Text.Html
                 )
-                val user = collection.find(id)
-                call.respond(user)
-            }*/
+            }
+            get("/signup") {
+                call.respondText(
+                    this::class.java.classLoader.getResource("signup.html")!!.readText(),
+                    ContentType.Text.Html
+                )
+            }
 
             static("/") {
                 resources("")
