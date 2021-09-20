@@ -15,7 +15,7 @@ val App = functionalComponent<RProps> { _ ->
         }
     }
     h1 {
-        +"Put this into a table :D"
+        +"It is into a table :D"
     }
     table {
 
@@ -56,81 +56,17 @@ val App = functionalComponent<RProps> { _ ->
         }
     }
 
-    var cartItem = User("","","","","")
-    h4 {
-        +"Username:"
-    }
     child(
         InputComponent,
         props = jsObject {
-            onSubmit = { input ->
-                cartItem.username = input
+            onSubmit = { username, password, firstname, lastname, birthdate ->
+                val user = User(username, password, firstname, lastname, birthdate)
                 scope.launch {
-                    username(input)
-                }
-            }
-        }
-    )
-
-    h4 {
-        +"Password:"
-    }
-    child(
-        InputComponent,
-        props = jsObject {
-            onSubmit = { input ->
-                cartItem.password = input
-                scope.launch {
-                    password(input)
-                }
-            }
-        }
-    )
-
-    h4 {
-        +"First name:"
-    }
-    child(
-        InputComponent,
-        props = jsObject {
-            onSubmit = { input ->
-                cartItem.firstname = input
-                scope.launch {
-                    firstname(input)
-                }
-            }
-        }
-    )
-
-    h4 {
-        +"Last name:"
-    }
-    child(
-        InputComponent,
-        props = jsObject {
-            onSubmit = { input ->
-                cartItem.lastname = input
-                scope.launch {
-                    lastname(input)
-                }
-            }
-        }
-    )
-
-    h4 {
-        +"Birthdate (dd-mm-yyyy):"
-    }
-    child(
-        InputComponent,
-        props = jsObject {
-            onSubmit = { input ->
-                cartItem.birthdate = input
-                scope.launch {
-                    birthdate(input)
-                    addUsers()
+                    addUsers(user)
                     setUsers(getUsers())
                 }
             }
         }
     )
+
 }
