@@ -14,21 +14,44 @@ val App = functionalComponent<RProps> { _ ->
             setUsers(getUsers())
         }
     }
-
     h1 {
         +"Put this into a table :D"
     }
-    ul {
-        users.sortedByDescending(User::username).forEach { item ->
-            li {
-                key = item.toString()
-                +"${item.username} ${item.firstname} ${item.lastname} ${item.birthdate}"
-            }
-            attrs.onClickFunction = {
-                scope.launch {
-                    deleteUsers(item)
-                    setUsers(getUsers())
+    table {
+
+        thead {
+            tr {
+                th {
+                    +"Username"
                 }
+                th {
+                    +"First name"
+                }
+                th {
+                    +"Last name"
+                }
+                th {
+                    +"Birthdate"
+                }
+            }
+        }
+
+        tbody {
+            users.forEach { item ->
+                tr {
+                    key = item.toString()
+                    td { +"${item.username}" }
+                    td { +"${item.firstname}" }
+                    td { +"${item.lastname}" }
+                    td { +"${item.birthdate}" }
+                }
+                attrs.onClickFunction = {
+                    scope.launch {
+                        deleteUsers(item)
+                        setUsers(getUsers())
+                    }
+                }
+
             }
         }
     }
